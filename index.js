@@ -56,6 +56,19 @@ server.put("/projects/:id", (req,res) => {
     return res.json(projects);    
 });
 
+server.delete("/projects/:id",checkID,(req,res) => {
+    const { id } = req.params;
+
+    const dataRemoved = projects.filter((el) => {
+        return el.id != id;
+    });
+    //var deletedItem = projects.splice(index,1);
+
+    projects = dataRemoved;
+    return res.json(projects);
+
+});
+
 server.post("/projects",(req,res) => {
     //const id = id; //generateUUID();
     const { title } = req.body;
