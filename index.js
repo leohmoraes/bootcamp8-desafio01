@@ -13,12 +13,15 @@ server.use(express.json());
  * POST /projects/:id/tasks {title}
  */
 var projects = [];
+var requisicoes = 0;
 const timeStart = new Date().getTime();//Timestamp
 
 server.use((req,res,next) => {
     console.time("performance");
+    requisicoes++;
     next();
     console.timeEnd("performance");
+    console.log("total de requisicoes",requisicoes);
 });
 
 server.get("/projects/", (req,res) => {
