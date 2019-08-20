@@ -14,6 +14,8 @@ server.use(express.json());
  */
 var projects = [];
 var requisicoes = 0;
+var id = 1;
+
 const timeStart = new Date().getTime();//Timestamp
 
 server.use((req,res,next) => {
@@ -55,11 +57,12 @@ server.put("/projects/:id", (req,res) => {
 });
 
 server.post("/projects",(req,res) => {
-    const id = generateUUID();
+    //const id = id; //generateUUID();
     const { title } = req.body;
     //const { tasks } = req.body.tasks; //array
 
     projects.push({ id : id, title: title }); //, tasks: tasks
+    id++;
 
     return res.status("201").json(projects);
 });
