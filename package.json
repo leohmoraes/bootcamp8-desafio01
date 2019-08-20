@@ -2,8 +2,16 @@
   "name": "mod01",
   "version": "1.0.0",
   "main": "index.js",
+  "repository": "https://github.com/leohmoraes/bootcamp8-desafio01.git",
+  "author": "Leo Moraes <moraes.leo@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
   }
 }
