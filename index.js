@@ -67,6 +67,25 @@ server.post("/projects",(req,res) => {
     return res.status("201").json(projects);
 });
 
+server.post("/projects/:id/tasks",checkID,(req,res) => {
+    const { title } = req.body;
+    const { id } = req.params;
+
+    for (var i = 0; i < projects.length; i++) {
+        var current = projects[i];
+        if (current.id == id) {
+          if(current.tasks) {
+             current.tasks.push(title);
+             break;
+          } 
+            current.tasks = [title];
+            break;
+        }
+    }
+
+    return res.json(projects);    
+});
+
 function checkID(req,res,next) {
     const { id } = req.params;
 
