@@ -12,12 +12,22 @@ server.use(express.json());
  * DELETE /projects/:id
  * POST /projects/:id/tasks {title}
  */
+
+ /**
+ * Utilizamos a variável `requisicoes` como
+ * `let` porque vai sofrer mutação. A variável
+ * `projects` poderia ser `const` porque é um `array`,
+ * mas ao redefinir ela não conseguimos permissão
+ */
 var projects = [];
-var requisicoes = 0;
+let requisicoes = 0;
 var id = 1;
 
 const timeStart = new Date().getTime();//Timestamp
 
+/**
+ * Middleware que dá log no número de requisições
+ */
 server.use((req,res,next) => {
     console.time("performance");
     requisicoes++;
@@ -26,10 +36,16 @@ server.use((req,res,next) => {
     console.log("total de requisicoes",requisicoes);
 });
 
+/**
+ * Projects
+ */
 server.get("/projects/", (req,res) => {
     return res.json(projects);
 });
 
+/**
+ * Project ID
+ */
 server.get("/projects/:id",checkID, (req,res) => {
     const { id } = req.params;
 
@@ -38,81 +54,108 @@ server.get("/projects/:id",checkID, (req,res) => {
           return it.id == id;
         }
      );
+    // const project = projects.find(p => p.id == id); //OK Gabarito
 
     return res.json(project);
 });
 
+/**
+ * Atualizacao do Projeto
+ */
 server.put("/projects/:id", checkID,(req,res) => {
     const { id } = req.params;
     const { title } = req.body;
 
-    for (var i = 0; i < projects.length; i++) {
-        if (projects[i].id == id) {
-          projects[i].title = title;
-          break;
-        }
-    }
+    // for (var i = 0; i < projects.length; i++) {
+    //     if (projects[i].id == id) {
+    //       projects[i].title = title;
+    //       break;
+    //     }
+    // } //versao Leo OK
+    const project = projects.find(p => p.id == id);
+    project.title = title;
 
-    return res.json(projects);    
+    return res.json(project);    
 });
 
+/**
+ * Exclusao do Projeto
+ */
 server.delete("/projects/:id",checkID,(req,res) => {
     const { id } = req.params;
 
     const dataRemoved = projects.filter((el) => {
         return el.id != id;
     });
-    //var deletedItem = projects.splice(index,1);
+    // projects = dataRemoved; //Nao pode ser const!! 
+    const projectIndex = projects.findIndex(p => p.id == id);
+    projects.splice(projectIndex, 1);
 
-    projects = dataRemoved;
-    return res.json(projects);
+    return res.send(); //retorna vazio
 
 });
 
+/**
+ * Projects NEW
+ */
 server.post("/projects",(req,res) => {
     //const id = id; //generateUUID();
     const { title } = req.body;
-    //const { tasks } = req.body.tasks; //array
 
-    projects.push({ id : id, title: title }); //, tasks: tasks
+    const project = {
+        id,
+        title,
+        tasks: []
+      };
+
+    projects.push(project);
     id++;
 
     return res.status("201").json(projects);
 });
 
+/**
+ * Nova Tarefa do projeto
+ */
 server.post("/projects/:id/tasks",checkID,(req,res) => {
     const { title } = req.body;
     const { id } = req.params;
 
-    for (var i = 0; i < projects.length; i++) {
-        var current = projects[i];
-        if (current.id == id) {
-          if(current.tasks) {
-             current.tasks.push(title);
-             break;
-          } 
-            current.tasks = [title];
-            break;
-        }
-    }
+    // for (var i = 0; i < projects.length; i++) {
+    //     var current = projects[i];
+    //     if (current.id == id) {
+    //       if(current.tasks) {
+    //          current.tasks.push(title);
+    //          break;
+    //       } 
+    //         current.tasks = [title];
+    //         break;
+    //     }
+    // } //Leo
+    const project = projects.find(p => p.id == id);
 
-    return res.json(projects);    
+    project.tasks.push(title);
+
+    return res.json(project);    
 });
 
+/**
+ * Middleware que checa se o projeto existe
+ */
 function checkID(req,res,next) {
     const { id } = req.params;
+    const project = projects.find(p => p.id == id);
 
-    var project =  projects.find(
-        (it) => {
-            if(it.id == id) {
-                return next();
-            }
-        }
-    );
-
-    return res.status(404).json( { error: "ID não encontrado" });
+    if (!project) {
+      return res.status(404).json({ error: 'ID não encontrado' });
+    }
+  
+    return next();
 }
 
+/**
+ * Gera um Hash ID, estilo MongoDB
+ */
 function generateUUID() { // Public Domain/MIT
     var d = timeStart;
     const timeEnd = new Date().getTime();//Timestamp console.timeStamp("performance");
