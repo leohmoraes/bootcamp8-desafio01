@@ -21,6 +21,9 @@ server.use((req,res,next) => {
     console.timeEnd("performance");
 });
 
+server.get("/projects/", (req,res) => {
+    return res.json(projects);
+});
 server.post("/projects",(req,res) => {
     const id = generateUUID();
     const { title } = req.body;
