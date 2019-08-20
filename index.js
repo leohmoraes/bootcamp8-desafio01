@@ -12,7 +12,7 @@ server.use(express.json());
  * DELETE /projects/:id
  * POST /projects/:id/tasks {title}
  */
-const projects = [];
+var projects = [];
 const timeStart = new Date().getTime();//Timestamp
 
 server.use((req,res,next) => {
