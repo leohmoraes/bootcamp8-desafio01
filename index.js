@@ -67,6 +67,19 @@ server.post("/projects",(req,res) => {
     return res.status("201").json(projects);
 });
 
+function checkID(req,res,next) {
+    const { id } = req.params;
+
+    var project =  projects.find(
+        (it) => {
+            if(it.id == id) {
+                return next();
+            }
+        }
+    );
+
+    return res.status(404).json( { error: "ID não encontrado" });
+}
 function generateUUID() { // Public Domain/MIT
     var d = timeStart;
     const timeEnd = new Date().getTime();//Timestamp console.timeStamp("performance");
