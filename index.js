@@ -30,7 +30,7 @@ server.get("/projects/", (req,res) => {
     return res.json(projects);
 });
 
-server.get("/projects/:id",(req,res) => {
+server.get("/projects/:id",checkID, (req,res) => {
     const { id } = req.params;
 
     var project =  projects.find(
@@ -42,7 +42,7 @@ server.get("/projects/:id",(req,res) => {
     return res.json(project);
 });
 
-server.put("/projects/:id", (req,res) => {
+server.put("/projects/:id", checkID,(req,res) => {
     const { id } = req.params;
     const { title } = req.body;
 
