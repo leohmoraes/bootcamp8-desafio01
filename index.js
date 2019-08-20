@@ -24,6 +24,17 @@ server.use((req,res,next) => {
 server.get("/projects/", (req,res) => {
     return res.json(projects);
 });
+server.get("/projects/:id",(req,res) => {
+    const { id } = req.params;
+
+    var project =  projects.find(
+        (it) => {
+          return it.id === id;
+        }
+     );
+
+    return res.json(project);
+});
 server.post("/projects",(req,res) => {
     const id = generateUUID();
     const { title } = req.body;
