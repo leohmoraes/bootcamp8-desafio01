@@ -35,7 +35,7 @@ server.get("/projects/:id",checkID, (req,res) => {
 
     var project =  projects.find(
         (it) => {
-          return it.id === id;
+          return it.id == id;
         }
      );
 
@@ -47,7 +47,7 @@ server.put("/projects/:id", checkID,(req,res) => {
     const { title } = req.body;
 
     for (var i = 0; i < projects.length; i++) {
-        if (projects[i].id === id) {
+        if (projects[i].id == id) {
           projects[i].title = title;
           break;
         }
@@ -112,6 +112,7 @@ function checkID(req,res,next) {
 
     return res.status(404).json( { error: "ID não encontrado" });
 }
+
 function generateUUID() { // Public Domain/MIT
     var d = timeStart;
     const timeEnd = new Date().getTime();//Timestamp console.timeStamp("performance");
